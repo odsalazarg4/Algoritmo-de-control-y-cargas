@@ -14,15 +14,15 @@ generacion_solar = 0.25 * sin(pi * (horas_dia - 6) / 12); % Calculo de generaci�
 
 %% Generación eolica
 Pmax_eolica = 15; % Potencia maxima generadda por el sistema elolico
-generacion_eolica = Pmax_eolica* rand(size(horas_dia)); % Perfil de generación durante el dia del sistema eolíco
+generacion_eolica = Pmax_eolica* rand(size(horas_dia)); % Perfil de generación aleatoria diaria del sistema eolíco
 
 %% Generacion Hibrida
 
-generacion_hibrida = generacion_eolica + generacion_solar; %% Perfil de generación  híbridad hora por hora
+generacion_hibrida = generacion_eolica + generacion_solar; %% Perfil de generación  híbridad hora por hora, se realiza la suma de la generación eolica y la solar
 
 %% Perfil de Consumo
 demanda = zeros(size(horas_dia)); %% Demanda energetica por perfil horario
-P_Max_demanda = 15; % Pico de consumo de la comunidad energetica 
+P_Max_demanda = 15; % Pico de consumo de la comunidad energetica definido por caso
 
 
 
@@ -35,7 +35,7 @@ demanda( 22:24)= 2 + (4-2) * rand(1, 3);%Perfil de consumo durante las ultimas h
 demanda(6:17)= 6 +(10-6) * rand(1,12);%% Consumo diurno variable entre las 6 y 17 horas
 
 %% Consumo máximo del diseño
-demanda(18:21) = P_Max_demanda; % Pico Máximo de Demanda (Horas 18 a 21)
+demanda(18:21) = P_Max_demanda; % Pico Máximo de Demanda (Horas 18 a 21) definido por caso
 
 %% Parametros de la bateria y del estado de carga SOC
 SOC = 50;   % Estado de carga inicial de la batería (%)
@@ -44,7 +44,7 @@ cap_bateria =100; % Capacidad nominal de la batería
 
 %% Balance energetico entre Generacion y demanda
 
-balance = generacion_hibrida - demanda; % superhabít o deficít energético por hora 
+balance = generacion_hibrida - demanda; % superhabít o deficít energético por hora, definido por diferencia entre generación y demanda
 
 %% Encabezado del informe
 fprintf('                           #######################################################\n')
@@ -66,19 +66,19 @@ for h= 1:24
         SOC = 0;
     end
     %% Rutas para determinar que sistemas mantiene activos segun estado SOC
-    if SOC>40 
+    if SOC>40 %Estado de suministro seguro, mantiene todos los sistemas activos
         Estado  = 'Seguro';
         Alumbrado= 'Activo';
         Bombeo= 'Activo';
         Escuela= 'Activo';
         
-    elseif SOC>20
+    elseif SOC>20 % Estado alerta, alumbrado publico apagado
         Estado = 'Alerta';
         Alumbrado= "Suspendido";
         Bombeo= 'Activo';
         Escuela= 'Activo';
         
-    else 
+    else % Estado emergencia, solo escuela activa
         Estado  = 'Emergencia';
         Alumbrado= 'Suspendido';
         Bombeo='Suspendido';

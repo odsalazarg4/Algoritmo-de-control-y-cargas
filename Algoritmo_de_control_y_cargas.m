@@ -47,6 +47,10 @@ cap_bateria =100; % Capacidad nominal de la batería
 balance = generacion_hibrida - demanda; % superhabít o deficít energético por hora 
 
 %% Encabezado del informe
+fprintf('                           #######################################################\n')
+fprintf('                                  Control de cargas y balance energético\n')       
+fprintf('                           #######################################################\n')
+fprintf('\n')
 fprintf('%-8s %-13s %-11s%-15s %-10s %-13s %-14s %-12s %-10s\n', ...
     'Hora','Generacion','Demanda','balance_estado','SOC','Estado','Alumbrado','Bombeo','Escuela');
 
@@ -56,10 +60,10 @@ for h= 1:24
     SOC= SOC + (balance(h)/cap_bateria)*100;
     % Ruta de seguridad para porteger la bateria
     if SOC >=100;
-        SOC=100
-    % Ruat de alerta para evitar descarga profunda
+        SOC=100;
+    % Ruta de alerta para evitar descarga profunda
     elseif SOC<0;
-        SOC = 0
+        SOC = 0;
     end
     %% Rutas para determinar que sistemas mantiene activos segun estado SOC
     if SOC>40 
@@ -80,7 +84,7 @@ for h= 1:24
         Bombeo='Suspendido';
         Escuela= 'Activo';
     end
-    %% Ruta para infromar estado de balance energetico
+    %% Ruta para informar estado de balance energetico
     if generacion_hibrida(h)>demanda(h)
         balance_estado = "Superhabit";
     else
@@ -94,5 +98,6 @@ for h= 1:24
     balance_estado, SOC, Estado, Alumbrado, Bombeo, Escuela);
     
 end
+fprintf('Fin de reporte\n')
 
 
